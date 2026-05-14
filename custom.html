@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Захиалга — Монгол бичиг</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== GLOBAL ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0a0a0a; color: #eee;
+            line-height: 1.6; padding-top: 56px;
+        }
+
+        
+        #site-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid #d4af37; z-index: 9999;
+        }
+        #site-header .nav-inner {
+            position: relative; display: flex; align-items: center; height: 56px; max-width: 1200px; margin: 0 auto;
+        }
+        #site-header nav {
+            display: flex; justify-content: center; align-items: center; width: 100%; height: 56px;
+            overflow-x: auto; scrollbar-width: none; padding: 0 20px;
+        }
+        #site-header nav::-webkit-scrollbar { display: none; }
+        #site-header nav a {
+            color: #ccc; text-decoration: none; font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.8px; padding: 6px 14px;
+            border-radius: 6px; white-space: nowrap; flex-shrink: 0; transition: 0.2s;
+        }
+        #site-header nav a:hover { color: #d4af37; background: rgba(212,175,55,0.08); }
+        #site-header nav a.active { color: #d4af37; border-bottom: 2px solid #d4af37; border-radius: 0; }
+
+        #nav-burger {
+            display: none; position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; padding: 6px; flex-direction: column; gap: 5px;
+        }
+        #nav-burger span { display: block; width: 24px; height: 2px; background: #d4af37; border-radius: 2px; transition: 0.3s; }
+        #site-header.menu-open #nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        #site-header.menu-open #nav-burger span:nth-child(2) { opacity: 0; }
+        #site-header.menu-open #nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        #nav-drawer {
+            display: none; flex-direction: column; background: rgba(0,0,0,0.97);
+            border-top: 1px solid rgba(212,175,55,0.2); overflow: hidden; max-height: 0; transition: max-height 0.35s ease;
+        }
+        #site-header.menu-open #nav-drawer { max-height: 600px; }
+        #nav-drawer a { color: #ccc; text-decoration: none; font-size: 13px; font-weight: 600; text-transform: uppercase; padding: 15px 28px; border-left: 3px solid transparent; transition: 0.2s; }
+        #nav-drawer a.active { color: #d4af37; border-left-color: #d4af37; background: rgba(212,175,55,0.08); }
+
+        @media(max-width:768px) { #site-header nav { display: none; } #nav-burger { display: flex; } #nav-drawer { display: flex; } }
+
+      
+        main { padding: 60px 20px; }
+        .container { max-width: 850px; margin: 0 auto; background: #111; padding: 40px; border-radius: 25px; border: 1px solid #222; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        
+        h1 { color: #d4af37; text-align: center; font-size: 2.2rem; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 35px; font-size: 0.95rem; }
+
+        .input-group { margin-bottom: 20px; }
+        .grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width:600px) { .grid-row { grid-template-columns: 1fr; } }
+        
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: #d4af37; font-weight: 600; }
+        input, select, textarea {
+            width: 100%; padding: 12px; border: 1px solid #333; border-radius: 10px; background: #0a0a0a; color: #fff; outline: none; transition: 0.3s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: #d4af37; }
+
+        .product-preview {
+            display: none; background: #161616; padding: 20px; border-radius: 15px; margin-bottom: 25px; 
+            border: 1px solid #333; align-items: center; gap: 25px;
+        }
+        .product-preview.show { display: flex; animation: fadeIn 0.4s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .product-preview img { width: 150px; height: 200px; border-radius: 10px; object-fit: cover; border: 1px solid #d4af37; }
+        .details-text h3 { color: #d4af37; margin-bottom: 8px; }
+        .details-text p { font-size: 14px; color: #aaa; margin-bottom: 12px; }
+        .price-badge { background: #d4af37; color: #000; padding: 5px 12px; border-radius: 6px; font-weight: bold; font-size: 14px; }
+
+        .total-card { background: #1a1a1a; padding: 20px; border-radius: 12px; text-align: right; margin: 25px 0; border-right: 5px solid #d4af37; }
+        .total-label { color: #888; font-size: 14px; }
+        .total-amount { display: block; font-size: 2rem; color: #fff; font-weight: bold; }
+
+        button.submit-btn { width: 100%; padding: 16px; background: #d4af37; color: #000; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; transition: 0.3s; text-transform: uppercase; }
+        button.submit-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212,175,55,0.2); }
+
+        #pdfResult { margin-top: 20px; text-align: center; }
+        .download-btn { display: inline-block; padding: 12px 30px; background: transparent; border: 2px solid #d4af37; color: #d4af37; text-decoration: none; border-radius: 10px; font-weight: bold; transition: 0.3s; }
+        .download-btn:hover { background: #d4af37; color: #000; }
+    </style>
+</head>
+<body>
+
+<header id="site-header">
+    <div class="nav-inner">
+        <nav>
+            <a href="index.html">Нүүр хуудас</a>
+            <a href="about.html">Тухай</a>
+            <a href="portfolio.html">Бүтээлүүд</a>
+            <a href="custom.html" class="active">Захиалгат</a>
+            <a href="courses.html">Хичээлүүд</a>
+            <a href="services.html">Үйлчилгээ</a>
+            <a href="blog.html">Блог</a>
+            <a href="events.html">Үйл ажиллагаа</a>
+            <a href="testimonials.html">Сэтгэгдэл</a>
+            <a href="contact.html">Холбоо барих</a>
+        </nav>
+        <button id="nav-burger" aria-label="Цэс нээх">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div id="nav-drawer">
+        <a href="index.html">Нүүр хуудас</a>
+        <a href="about.html">Тухай</a>
+        <a href="portfolio.html">Бүтээлүүд</a>
+        <a href="custom.html" class="active">Захиалгат</a>
+        <a href="courses.html">Хичээлүүд</a>
+        <a href="services.html">Үйлчилгээ</a>
+        <a href="blog.html">Блог</a>
+        <a href="events.html">Үйл ажиллагаа</a>
+        <a href="testimonials.html">Сэтгэгдэл</a>
+        <a href="contact.html">Холбоо барих</a>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <h1>Уран бичлэгийн захиалга</h1>
+        <p class="subtitle">Хүссэн бүтээл эсвэл хэрэгслээ сонгож захиалгын нэхэмжлэх үүсгэнэ үү.</p>
+
+        <form id="orderForm">
+            <div class="grid-row">
+                <div class="input-group">
+                    <label>Захиалагчийн нэр</label>
+                    <input type="text" id="custName" placeholder="Нэрээ бичнэ үү" required>
+                </div>
+                <div class="input-group">
+                    <label>Холбоо барих утас</label>
+                    <input type="text" id="custPhone" placeholder="Утасны дугаар" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Бүтээгдэхүүн / Хэрэгсэл сонгох</label>
+                <select id="productSelect" required>
+                    <option value="">-- Сонгох --</option>
+                    <optgroup label="Уран бичлэгүүд">
+                        <option value="Босоо бичлэг (Цаас)">Босоо бичлэг - Муутуу цаас (₮60,000)</option>
+                        <option value="Уран зурагт бичлэг">Уран зурагтай хосолсон бичлэг (₮150,000)</option>
+                        <option value="Торгон дээрх бичлэг">Торгон дээрх уран бичлэг (₮250,000)</option>
+                        <option value="Модон дээрх сийлбэр">Модон дээрх сийлмэл бичлэг (₮350,000)</option>
+                        <option value="Жаазтай бичлэг">Жаазтай уран бичлэг (₮120,000)</option>
+                    </optgroup>
+                    <optgroup label="Хэрэгсэл худалдаа">
+                        <option value="Муутуу цаас">Муутуу цаас (₮25,000)</option>
+                        <option value="Жижиг бийр">Жижиг бийр (₮15,000)</option>
+                        <option value="Дунд бийр">Дунд бийр (₮25,000)</option>
+                        <option value="Том бийр">Том бийр (₮35,000)</option>
+                        <option value="Янтай">Янтай (₮120,000)</option>
+                        <option value="Бэх">Бэх (₮15,000)</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="product-preview" id="productPreview">
+                <img src="" id="displayImg">
+                <div class="details-text">
+                    <h3 id="displayName">Нэр</h3>
+                    <p id="displayDesc">Тайлбар</p>
+                    <span class="price-badge" id="displayPrice">₮0</span>
+                </div>
+            </div>
+
+            <div class="grid-row">
+                <div class="input-group">
+                    <label>Тоо ширхэг</label>
+                    <input type="number" id="qty" min="1" value="1" required>
+                </div>
+                <div class="input-group">
+                    <label>Хэмжээ (Зөвхөн бичлэгт хамааралтай)</label>
+                    <select id="pkgType">
+                        <option value="Жижиг (A4)">Жижиг (A4 хэмжээтэй)</option>
+                        <option value="Дунд (A3)">Дунд (A3 хэмжээтэй) +20%</option>
+                        <option value="Том (A2)">Том (A2 хэмжээтэй) +50%</option>
+                        <option value="Тусгай">Тусгай хэмжээ +80%</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Бичүүлэх утга эсвэл нэмэлт хүсэлт</label>
+                <textarea id="notes" placeholder="Жишээ: 'Мөнх тэнгэр', 'Гэр бүл' гэх мэт..."></textarea>
+            </div>
+
+            <div class="total-card">
+                <span class="total-label">Төлөх нийт дүн:</span>
+                <span class="total-amount" id="finalTotal">₮0</span>
+            </div>
+
+            <button type="submit" class="submit-btn">Захиалга үүсгэх</button>
+            <div id="pdfResult"></div>
+        </form>
+    </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+  
+    const navBurger = document.getElementById("nav-burger");
+    const siteHeader = document.getElementById("site-header");
+    navBurger.onclick = (e) => {
+        e.stopPropagation();
+        siteHeader.classList.toggle("menu-open");
+    };
+    document.addEventListener("click", (e) => {
+        if (!siteHeader.contains(e.target)) siteHeader.classList.remove("menu-open");
+    });
+
+    const productDB = {
+        "Босоо бичлэг (Цаас)": {img: "img/img3.jpg", desc: "Уламжлалт муутуу цаасан дээр бийрээр бичсэн бичлэг.", price: 60000, type: "art"},
+        "Уран зурагт бичлэг": {img: "img/img1.jpg", desc: "Монгол ахуйг харуулсан зурагтай хосолсон уран бичлэг.", price: 150000, type: "art"},
+        "Торгон дээрх бичлэг": {img: "img/img6.jpg", desc: "Торгон дээр гараар бичсэн хүндэтгэлийн бичлэг.", price: 250000, type: "art"},
+        "Модон дээрх сийлбэр": {img: "img/uil-ajillagaa.jpg", desc: "Модон дээр сийлбэрээр сийлсэн бичээс.", price: 350000, type: "art"},
+        "Жаазтай бичлэг": {img: "img/img9.jpg", desc: "Жаазалсан бэлэг дурсгалын уран бичлэг.", price: 120000, type: "art"},
+        "Муутуу цаас": {img: "img/muutuu.jpg", desc: "Уран бичлэгт зориулсан чанартай муутуу цаас.", price: 25000, type: "tool"},
+        "Жижиг бийр": {img: "img/jijig-biir.jpg", desc: "Нарийн зураас гаргахад зориулагдсан бийр.", price: 15000, type: "tool"},
+        "Дунд бийр": {img: "img/dund-biir.jpg", desc: "Үндсэн бичлэг хийхэд тохиромжтой дунд бийр.", price: 25000, type: "tool"},
+        "Том бийр": {img: "img/tom-biir.jpg", desc: "Том хэмжээний бичлэгт зориулсан бийр.", price: 35000, type: "tool"},
+        "Янтай": {img: "img/yntai.jpg", desc: "Бэх нэрж бийр ирлэх зориулалттай чулуун янтай.", price: 120000, type: "tool"},
+        "Бэх": {img: "img/beh.jpg", desc: "Уламжлалт хар өнгийн чанартай бэх.", price: 15000, type: "tool"}
+    };
+
+    const pSelect = document.getElementById("productSelect");
+    const previewBox = document.getElementById("productPreview");
+
+    function updateUI() {
+        const key = pSelect.value;
+        const qty = parseInt(document.getElementById("qty").value) || 0;
+        const size = document.getElementById("pkgType").value;
+        
+        if(productDB[key]) {
+            document.getElementById("displayImg").src = productDB[key].img;
+            document.getElementById("displayName").textContent = key;
+            document.getElementById("displayDesc").textContent = productDB[key].desc;
+            document.getElementById("displayPrice").textContent = `Суурь үнэ: ₮${productDB[key].price.toLocaleString()}`;
+            previewBox.classList.add("show");
+
+            let basePrice = productDB[key].price;
+            let multiplier = 1;
+
+            
+            if(productDB[key].type === "art") {
+                if(size === "Дунд (A3)") multiplier = 1.2;
+                else if(size === "Том (A2)") multiplier = 1.5;
+                else if(size === "Тусгай") multiplier = 1.8;
+                document.getElementById("pkgType").disabled = false;
+            } else {
+                document.getElementById("pkgType").disabled = true;
+            }
+
+            let total = basePrice * multiplier * qty;
+            document.getElementById("finalTotal").textContent = `₮${Math.round(total).toLocaleString()}`;
+        } else {
+            previewBox.classList.remove("show");
+            document.getElementById("finalTotal").textContent = `₮0`;
+        }
+    }
+
+    pSelect.addEventListener("change", updateUI);
+    document.getElementById("qty").addEventListener("input", updateUI);
+    document.getElementById("pkgType").addEventListener("change", updateUI);
+
+    document.getElementById("orderForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const name = document.getElementById("custName").value;
+        const phone = document.getElementById("custPhone").value;
+        const total = document.getElementById("finalTotal").textContent;
+
+        doc.setFillColor(20, 20, 20);
+        doc.rect(0, 0, 210, 40, 'F');
+        doc.setTextColor(212, 175, 55);
+        doc.setFontSize(22);
+        doc.text("CALLIGRAPHY INVOICE", 105, 25, null, null, "center");
+
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(11);
+        doc.text(`Customer: ${name}`, 15, 55);
+        doc.text(`Phone: ${phone}`, 15, 62);
+        doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, 55);
+
+        doc.autoTable({
+            startY: 75,
+            head: [['Product', 'Size', 'Qty', 'Total']],
+            body: [[pSelect.value, document.getElementById("pkgType").disabled ? "-" : document.getElementById("pkgType").value, document.getElementById("qty").value, total]],
+            headStyles: { fillColor: [212, 175, 55], textColor: [0, 0, 0] }
+        });
+
+        doc.text("Notes:", 15, doc.lastAutoTable.finalY + 15);
+        doc.setFontSize(10);
+        doc.text(document.getElementById("notes").value || "No special requests", 15, doc.lastAutoTable.finalY + 25);
+
+        const pdfBlob = doc.output('datauristring');
+        document.getElementById("pdfResult").innerHTML = `<a href="${pdfBlob}" download="Order_Invoice.pdf" class="download-btn">📥 НЭХЭМЖЛЭХ ТАТАХ (PDF)</a>`;
+    });
+</script>
+</body>
+</html>

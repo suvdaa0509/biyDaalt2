@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Монгол бичиг</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#0b0b0b;font-family:system-ui,sans-serif;color:#d4af37;overflow:hidden;}
+#bg3d{position:absolute;inset:0;z-index:0;}
+.hero{position:relative;z-index:2;width:100%;height:100vh;display:flex;justify-content:center;align-items:center;}
+.poem{writing-mode:vertical-lr;text-orientation:mixed;font-size:52px;letter-spacing:8px;line-height:1.4;animation:wind 8s ease-in-out infinite;}
+@keyframes wind{0%{transform:translateY(0);}50%{transform:translateY(-18px);}100%{transform:translateY(0);}}
+.particle{position:absolute;width:6px;height:6px;background:rgba(212,175,55,0.3);border-radius:50%;animation:float 20s linear infinite;z-index:1;}
+@keyframes float{from{transform:translateY(110vh);}to{transform:translateY(-10vh);}}
+@media(max-width:768px){.poem{font-size:32px;letter-spacing:4px;}}
+</style>
+</head>
+<body>
+
+<style>
+#site-header,#site-header *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif;}
+#site-header{position:fixed;top:0;left:0;width:100%;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);border-bottom:1px solid #d4af37;z-index:9999;}
+#site-header .nav-inner{position:relative;display:flex;align-items:center;height:56px;}
+#site-header nav{display:flex;justify-content:center;align-items:center;width:100%;height:56px;overflow-x:auto;scrollbar-width:none;padding:0 20px;}
+#site-header nav::-webkit-scrollbar{display:none;}
+#site-header nav a{color:#ccc;text-decoration:none;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:6px 14px;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:color .2s,background .2s;}
+#site-header nav a:hover{color:#d4af37;background:rgba(212,175,55,0.08);}
+#site-header nav a.active{color:#d4af37;border-bottom:2px solid #d4af37;border-radius:0;}
+#nav-burger{display:none;position:absolute;right:18px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:6px;flex-direction:column;align-items:center;gap:5px;}
+#nav-burger span{display:block;width:24px;height:2px;background:#d4af37;border-radius:2px;transition:transform .3s,opacity .3s;}
+#site-header.menu-open #nav-burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+#site-header.menu-open #nav-burger span:nth-child(2){opacity:0;}
+#site-header.menu-open #nav-burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#nav-drawer{display:none;flex-direction:column;background:rgba(0,0,0,0.97);border-top:1px solid rgba(212,175,55,0.2);overflow:hidden;max-height:0;transition:max-height .35s ease;}
+#site-header.menu-open #nav-drawer{max-height:600px;}
+#nav-drawer a{color:#ccc;text-decoration:none;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:13px 28px;border-left:3px solid transparent;transition:color .2s,border-color .2s,background .2s;}
+#nav-drawer a:hover{color:#d4af37;background:rgba(212,175,55,0.06);border-left-color:rgba(212,175,55,0.4);}
+#nav-drawer a.active{color:#d4af37;border-left-color:#d4af37;background:rgba(212,175,55,0.08);}
+@media(max-width:768px){#site-header nav{display:none;}#nav-burger{display:flex;}#nav-drawer{display:flex;}}
+body{padding-top:56px;}
+</style>
+<header id="site-header">
+  <div class="nav-inner">
+    <nav>
+      <a href="index.html" class="active">Нүүр хуудас</a>
+      <a href="about.html">Тухай</a>
+      <a href="portfolio.html">Бүтээлүүд</a>
+      <a href="custom.html">Захиалгат</a>
+      <a href="courses.html">Хичээлүүд</a>
+      <a href="services.html">Үйлчилгээ</a>
+      <a href="blog.html">Блог</a>
+      <a href="events.html">Үйл ажиллагаа</a>
+      <a href="testimonials.html">Сэтгэгдэл</a>
+      <a href="contact.html">Холбоо барих</a>
+    </nav>
+    <button id="nav-burger" aria-label="Цэс нээх" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div id="nav-drawer">
+    <a href="index.html" class="active">Нүүр хуудас</a>
+    <a href="about.html">Тухай</a>
+    <a href="portfolio.html">Бүтээлүүд</a>
+    <a href="custom.html">Захиалгат</a>
+    <a href="courses.html">Хичээлүүд</a>
+    <a href="services.html">Үйлчилгээ</a>
+    <a href="blog.html">Блог</a>
+    <a href="events.html">Үйл ажиллагаа</a>
+    <a href="testimonials.html">Сэтгэгдэл</a>
+    <a href="contact.html">Холбоо барих</a>
+  </div>
+</header>
+<script>
+(function(){
+  var h=document.getElementById("site-header");
+  var b=document.getElementById("nav-burger");
+  var d=document.getElementById("nav-drawer");
+  b.addEventListener("click",function(e){e.stopPropagation();h.classList.toggle("menu-open");b.setAttribute("aria-expanded",h.classList.contains("menu-open"));});
+  d.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){h.classList.remove("menu-open");});});
+  document.addEventListener("click",function(e){if(!h.contains(e.target))h.classList.remove("menu-open");});
+  window.addEventListener("beforeunload",function(){document.body.style.overflow="auto";});
+})();
+</script>
+
+<div id="bg3d"></div>
+<section class="hero">
+  <div id="poem" class="poem"></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+<script>
+const poems=[
+ ["ᠲᠩᠷᠢ ᠶ᠋ᠢᠨ ᠪᠢᠴᠢᢉ","ᢈᠥᢈᠡ ᠲᠠᠮᠠᠭ᠎ᠠ ᠲᠠᠢ ᠮᠣᠩᠭᠣᠯ ᢈᠡᠯᠡᠨ ᠦ᠋ ᠮᠢᠨᠢ","ᢈᠥᠯᢉᠡᠨ ᠰᠤᠳᠤᠷ — ᠪᠣᠰᠤᠭ᠎ᠠ ᠪᠢᠴᠢᢉ","ᢈᠦᠮᠦᠨ ᠵᠠᠶᠠᠭᠠᠨ ᠤ᠋ ᠠᠮᠢᠨ ᠬᠣᠯᠪᠤᠭ᠎ᠠ","ᢈᠥᢈᠦᠯ ᠲᠡᠢ ᠳᠡᠯᠡᢈᠡᠢ ᠶ᠋ᠢᠨ ᠴᠠᠭᠠᠨ ᠰᠦᠨ ᠪᠢᠴᠢᢉ᠃"],
+ ["ᠲᠢᠲᠢᠮ ᠨᠢ — ᠲᠥᠷᠦ ᠶ᠋ᠢᠨ ᠮᠢᠨᠢ ᠰᠦᠷ ᢈᠦᠴᠦ","ᠰᠢᠳᠦ ᠨᠢ — ᠡᠪ ᠡᠶ᠎ᠡ ᠶ᠋ᠢᠨ ᠪᠡᠯᢉᠡᠳᠡᠯ","ᢉᠡᠳᠡᠰᠦ ᠨᠢ — ᠠᠷᠪᠢᠨ ᠪᠠᠶᠠᠯᠢᠭ ᠰᠠᠩ","ᠰᠡᢉᠦᠯ ᠨᠢ — ᠠᠯᠤᠰ ᠢᠷᠡᢉᠡᠳᠦᠢ ᠶ᠋ᠢᠨ ᠵᠠᠮ ᠪᠢᠯᠡ᠃"]
+];
+let p=0,l=0,c=0;
+const el=document.getElementById("poem");
+function type(){if(l>=poems[p].length){setTimeout(next,2500);return;}const line=poems[p][l];if(c<line.length){el.innerHTML+=line[c++];setTimeout(type,80);}else{el.innerHTML+="<br>";c=0;l++;setTimeout(type,400);}}
+function next(){el.innerHTML="";l=0;c=0;p=(p+1)%poems.length;type();}
+type();
+for(let i=0;i<30;i++){const d=document.createElement("div");d.className="particle";d.style.left=Math.random()*100+"vw";d.style.animationDuration=15+Math.random()*15+"s";d.style.animationDelay=Math.random()*10+"s";document.body.appendChild(d);}
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x0b0b0b,5,25);
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,100);camera.position.z=10;
+const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});renderer.setSize(innerWidth,innerHeight);document.getElementById("bg3d").appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xd4af37,0.6));const pt=new THREE.PointLight(0xffdd99,1);pt.position.set(5,5,10);scene.add(pt);
+const chars=["ᠠ","ᠡ","ᠢ","ᠣ","ᠤ","ᠮ","ᠭ","ᠪ","ᠴ","ᠲ","ᠯ","ᠰ","ᠶ","ᠨ","ᠷ"];
+const group=new THREE.Group();
+for(let i=0;i<120;i++){const ch=chars[Math.floor(Math.random()*chars.length)];const cv=document.createElement("canvas");cv.width=cv.height=256;const ctx=cv.getContext("2d");ctx.fillStyle="rgba(255,220,120,1)";ctx.shadowColor="rgba(255,220,120,0.8)";ctx.shadowBlur=18;ctx.font="180px serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(ch,128,150);const mat=new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(cv),transparent:true,opacity:0.85,emissive:new THREE.Color(0xffdd88),emissiveIntensity:0.8,metalness:0.3,roughness:0.4});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(1.2,1.2),mat);mesh.position.set((Math.random()-.5)*18,(Math.random()-.5)*10,(Math.random()-.5)*14);mesh.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,0);group.add(mesh);}
+scene.add(group);
+(function animate(){requestAnimationFrame(animate);group.rotation.y+=0.0004;group.rotation.x+=0.0002;group.children.forEach((m,i)=>{m.position.y+=Math.sin(Date.now()*.0005+i)*.0004;});renderer.render(scene,camera);})();
+window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>

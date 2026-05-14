@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Монгол Бичиг — Тоглоом</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            width: 100%; height: 100%;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0a0a0a; color: #fff;
+            overflow-x: hidden; padding-top: 56px;
+        }
+
+        #site-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid #d4af37; z-index: 9999;
+        }
+        #site-header .nav-inner {
+            position: relative; display: flex; align-items: center; height: 56px; max-width: 1200px; margin: 0 auto;
+        }
+        #site-header nav {
+            display: flex; justify-content: center; align-items: center; width: 100%; height: 56px;
+            overflow-x: auto; scrollbar-width: none; padding: 0 20px;
+        }
+        #site-header nav::-webkit-scrollbar { display: none; }
+        #site-header nav a {
+            color: #ccc; text-decoration: none; font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.8px; padding: 6px 14px;
+            border-radius: 6px; white-space: nowrap; flex-shrink: 0; transition: 0.2s;
+        }
+        #site-header nav a:hover { color: #d4af37; background: rgba(212,175,55,0.08); }
+        #site-header nav a.active { color: #d4af37; border-bottom: 2px solid #d4af37; border-radius: 0; }
+
+        #nav-burger {
+            display: none; position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; padding: 6px; flex-direction: column; gap: 5px;
+        }
+        #nav-burger span { display: block; width: 24px; height: 2px; background: #d4af37; border-radius: 2px; transition: 0.3s; }
+        #site-header.menu-open #nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        #site-header.menu-open #nav-burger span:nth-child(2) { opacity: 0; }
+        #site-header.menu-open #nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        #nav-drawer {
+            display: none; flex-direction: column; background: rgba(0,0,0,0.97);
+            border-top: 1px solid rgba(212,175,55,0.2); overflow: hidden; max-height: 0; transition: max-height 0.35s ease;
+        }
+        #site-header.menu-open #nav-drawer { max-height: 600px; }
+        #nav-drawer a { color: #ccc; text-decoration: none; font-size: 13px; font-weight: 600; text-transform: uppercase; padding: 15px 28px; border-left: 3px solid transparent; transition: 0.2s; }
+        #nav-drawer a.active { color: #d4af37; border-left-color: #d4af37; background: rgba(212,175,55,0.08); }
+
+        @media(max-width:768px) { #site-header nav { display: none; } #nav-burger { display: flex; } #nav-drawer { display: flex; } }
+
+        .scoreboard {
+            text-align: center; font-size: 1.1rem; font-weight: bold; color: #d4af37;
+            background: #111; padding: 15px; border-bottom: 1px solid #222;
+        }
+
+        .main-title {
+            text-align: center; margin: 40px 0; font-size: 2.5rem; color: #d4af37;
+            text-transform: uppercase; letter-spacing: 3px;
+        }
+
+        .container { display: flex; justify-content: center; flex-wrap: wrap; gap: 25px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        
+        .card {
+            background: #151515; border: 1px solid #222; border-radius: 20px;
+            padding: 30px; width: 300px; text-align: center; transition: 0.4s;
+            filter: grayscale(100%); opacity: 0.4; cursor: not-allowed;
+        }
+        .card.unlocked { filter: grayscale(0%); opacity: 1; cursor: pointer; border-color: #d4af37; }
+        .card.unlocked:hover { transform: translateY(-10px); border-color: #d4af37; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15); }
+        
+        .level-icon { font-size: 3rem; margin-bottom: 15px; color: #d4af37; display: block; }
+        .card h3 { margin-bottom: 10px; color: #fff; }
+        .card p { color: #888; font-size: 0.9rem; }
+        .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(10px); }
+        .modal.active { display: flex; }
+        .modal-content { background: #111; border: 1px solid #d4af37; padding: 40px; border-radius: 25px; width: 90%; max-width: 500px; text-align: center; }
+        
+        .question-box { margin-bottom: 25px; padding: 20px; background: rgba(212, 175, 55, 0.05); border-radius: 15px; border: 1px solid #333; }
+        input[type="text"] { 
+            width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; 
+            border: 1px solid #333; background: #0a0a0a; color: white; text-align: center; font-size: 1.1rem; outline: none;
+        }
+        input:focus { border-color: #d4af37; }
+        
+        .btn-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        button.game-btn { padding: 14px; border: none; border-radius: 12px; background: #d4af37; color: #000; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; }
+        button.game-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
+        .close-btn { background: #333 !important; color: #fff !important; margin-top: 20px; width: 100%; }
+
+        @keyframes popUp {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -60%) scale(1.1); opacity: 1; }
+            100% { transform: translate(-50%, -70%) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header id="site-header">
+    <div class="nav-inner">
+        <nav>
+            <a href="index.html">Нүүр хуудас</a>
+            <a href="about.html">Тухай</a>
+            <a href="portfolio.html">Бүтээлүүд</a>
+            <a href="custom.html">Захиалгат</a>
+            <a href="courses.html">Хичээлүүд</a>
+            <a href="services.html">Үйлчилгээ</a>
+            <a href="blog.html">Блог</a>
+            <a href="events.html">Үйл ажиллагаа</a>
+            <a href="testimonials.html">Сэтгэгдэл</a>
+            <a href="contact.html">Холбоо барих</a>
+        </nav>
+        <button id="nav-burger" aria-label="Цэс нээх">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div id="nav-drawer">
+        <a href="index.html">Нүүр хуудас</a>
+        <a href="about.html">Тухай</a>
+        <a href="portfolio.html">Бүтээлүүд</a>
+        <a href="custom.html">Захиалгат</a>
+        <a href="courses.html">Хичээлүүд</a>
+        <a href="services.html">Үйлчилгээ</a>
+        <a href="blog.html">Блог</a>
+        <a href="events.html">Үйл ажиллагаа</a>
+        <a href="testimonials.html">Сэтгэгдэл</a>
+        <a href="contact.html">Холбоо барих</a>
+    </div>
+</header>
+
+<div class="scoreboard">Оноо: <span id="score">0</span> | Нээгдсэн шат: <span id="user-lvl">1</span></div>
+
+<h1 class="main-title">Монгол Бичиг</h1>
+
+<div class="container">
+    <div class="card unlocked" id="card-1" onclick="openLevel(1)">
+        <span class="level-icon">ᠠ</span>
+        <h3>Анхан шат</h3>
+        <p>Зурлага болон үндсэн үсэг</p>
+    </div>
+    <div class="card" id="card-2" onclick="openLevel(2)">
+        <span class="level-icon">ᠪ</span>
+        <h3>Дунд шат</h3>
+        <p>Үг бүтээх ба унших</p>
+    </div>
+    <div class="card" id="card-3" onclick="openLevel(3)">
+        <span class="level-icon">ᠴ</span>
+        <h3>Ахлах шат</h3>
+        <p>Өгүүлбэр ба дүрэм</p>
+    </div>
+</div>
+
+<div class="modal" id="gameModal">
+    <div class="modal-content">
+        <h2 id="qTitle" style="color:#d4af37; margin-bottom:15px; font-size: 1.2rem;">Даалгавар</h2>
+        <div id="gameArea"></div>
+        <button class="game-btn close-btn" onclick="closeModal()">Тоглоомыг зогсоох</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+   
+    const navBurger = document.getElementById("nav-burger");
+    const siteHeader = document.getElementById("site-header");
+
+    navBurger.onclick = (e) => {
+        e.stopPropagation();
+        siteHeader.classList.toggle("menu-open");
+    };
+    document.addEventListener("click", (e) => {
+        if (!siteHeader.contains(e.target)) siteHeader.classList.remove("menu-open");
+    });
+
+    let score = 0;
+    let unlockedLevel = 1;
+    let currentQIndex = 0;
+    let currentLvl = 1;
+    let currentTasks = [];
+
+    const encouragements = ["Маш сайн байна! 🎉", "Гайхалтай! ✨", "Зөв хариуллаа! 💪", "Монгол бичгийн мастер! 🏹", "Яг зөв! 🔥"];
+
+    const tasksData = {
+        1: [
+            { type: "choice", q: "Монгол бичгийн үгийн эхэнд ордог зурлагыг юу гэдэг вэ?", a: ["Титэм", "Шүд", "Гэдэс"], c: "Титэм" },
+            { type: "choice", q: "Монгол бичгийн гол шугамыг юу гэж нэрлэдэг вэ?", a: ["Нуруу", "Шилбэ", "Гэдэс"], c: "Нуруу" },
+            { type: "input", q: "Үг дунд ордог богино зурлагыг юу гэдэг вэ? (Ш...)", c: "шүд" }
+        ],
+        2: [
+            { type: "choice", q: "'ᠳᠤᠨᠳᠤ' гэдэг үгийг кириллээр юу гэх вэ?", a: ["Дунд", "Дор", "Дандаа"], c: "Дунд" },
+            { type: "input", q: "'Сайн' гэдгийг галиглаж бичнэ үү (С...)", c: "сайин" }
+        ],
+        3: [
+            { type: "choice", q: "Чингисийн чулууны бичиг хэдэн онд бичигдсэн бэ?", a: ["1224", "1206", "1300"], c: "1224" },
+            { type: "input", q: "Монгол бичгийг дээрээс доош, зүүнээс _____ тийш бичдэг.", c: "баруун" }
+        ]
+    };
+
+    function openLevel(lvl) {
+        if (lvl > unlockedLevel) { alert("Энэ шат хаалттай байна!"); return; }
+        currentLvl = lvl;
+        currentQIndex = 0;
+        currentTasks = [...tasksData[lvl]].sort(() => Math.random() - 0.5);
+        document.getElementById('gameModal').classList.add('active');
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const area = document.getElementById('gameArea');
+        const task = currentTasks[currentQIndex];
+        document.getElementById('qTitle').textContent = `Шат ${currentLvl} - Асуулт ${currentQIndex + 1}/${currentTasks.length}`;
+        area.innerHTML = `<div class="question-box"><p>${task.q}</p></div>`;
+
+        if (task.type === "choice") {
+            const grid = document.createElement('div');
+            grid.className = "btn-grid";
+            task.a.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "game-btn";
+                btn.textContent = opt;
+                btn.onclick = () => check(opt, task.c);
+                grid.appendChild(btn);
+            });
+            area.appendChild(grid);
+        } else {
+            area.innerHTML += `
+                <input type="text" id="userInput" placeholder="Хариултаа бичээд шалгах товчийг дар..." autocomplete="off">
+                <button class="game-btn" onclick="handleInput()" style="width:100%">Шалгах</button>
+            `;
+            setTimeout(() => document.getElementById('userInput').focus(), 100);
+        }
+    }
+
+    function handleInput() {
+        const input = document.getElementById('userInput');
+        check(input.value.trim().toLowerCase(), currentTasks[currentQIndex].c.toLowerCase());
+    }
+
+    function check(u, c) {
+        if (u === c) {
+            score += 20;
+            document.getElementById('score').textContent = score;
+            showFeedback(encouragements[Math.floor(Math.random() * encouragements.length)]);
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#d4af37', '#ffffff'] });
+
+            currentQIndex++;
+            if (currentQIndex < currentTasks.length) {
+                setTimeout(renderQuestion, 1200);
+            } else {
+                finish();
+            }
+        } else {
+            alert("Буруу байна, дахин оролдоорой! 🤔");
+        }
+    }
+
+    function showFeedback(msg) {
+        const fb = document.createElement('div');
+        fb.style = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    background: #d4af37; color: #000; padding: 15px 30px; border-radius: 50px; 
+                    font-weight: bold; font-size: 1.2rem; z-index: 11000; animation: popUp 1.2s forwards; pointer-events: none;`;
+        fb.innerText = msg;
+        document.body.appendChild(fb);
+        setTimeout(() => fb.remove(), 1200);
+    }
+
+    function finish() {
+        if (currentLvl === unlockedLevel && unlockedLevel < 3) {
+            unlockedLevel++;
+            document.getElementById(`card-${unlockedLevel}`).classList.add('unlocked');
+            document.getElementById('user-lvl').textContent = unlockedLevel;
+        }
+        document.getElementById('gameArea').innerHTML = `
+            <h2 style="color:#d4af37; margin-bottom:10px;">Баяр хүргэе! 🎉</h2>
+            <p style="margin-bottom:20px;">Та энэ шатыг амжилттай дуусгалаа.</p>
+            <button class="game-btn" onclick="closeModal()" style="width:100%">Цэс рүү буцах</button>
+        `;
+    }
+
+    function closeModal() { document.getElementById('gameModal').classList.remove('active'); }
+</script>
+
+</body>
+</html>

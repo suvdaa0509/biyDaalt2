@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Арга хэмжээ — Монгол бичиг</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:system-ui;background:#0b0b0b;color:#fff;}
+main{padding:80px 20px 40px;}
+h1{text-align:center;color:#d4af37;margin-bottom:8px;}
+.subtitle{text-align:center;color:#aaa;margin-bottom:50px;}
+.event{max-width:1100px;margin:auto;background:#161616;border-radius:20px;overflow:hidden;cursor:pointer;transition:.4s;}
+.event:hover{transform:translateY(-8px);}
+.event img{width:100%;height:200px;object-fit:cover;}
+.event-body{padding:20px;}
+.badge{background:#d4af37;color:#000;font-size:12px;padding:4px 12px;border-radius:20px;font-weight:bold;}
+.event h3{margin:12px 0;}
+.date{color:#d4af37;font-size:14px;}
+.desc{color:#ccc;font-size:14px;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 0;z-index:2000;}
+.modal.active{display:flex;}
+.modal-box{background:#161616;border-radius:24px;width:95%;max-width:900px;max-height:85vh;overflow-y:auto;padding:30px;animation:zoom .4s ease;position:relative;}
+@keyframes zoom{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.close{position:sticky;top:0;display:block;text-align:right;font-size:30px;cursor:pointer;color:#d4af37;line-height:1;}
+.modal h2{color:#d4af37;margin-bottom:10px;}
+.modal p{color:#ccc;line-height:1.7;}
+ul{margin:10px 0 20px 20px;color:#ccc;}
+label{display:block;margin:10px 0 5px;}
+input,textarea{width:100%;padding:10px;border:none;border-radius:8px;background:#0f0f0f;color:#fff;}
+textarea{resize:none;height:90px;}
+button{margin-top:15px;padding:12px 25px;background:#d4af37;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+button:hover{background:#fff;}
+.contact{margin-top:25px;padding:15px;background:#0f0f0f;border-radius:12px;}
+.contact p{margin:6px 0;color:#ccc;}
+</style>
+</head>
+<body>
+
+<style>
+#site-header,#site-header *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif;}
+#site-header{position:fixed;top:0;left:0;width:100%;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);border-bottom:1px solid #d4af37;z-index:9999;}
+#site-header .nav-inner{position:relative;display:flex;align-items:center;height:56px;}
+#site-header nav{display:flex;justify-content:center;align-items:center;width:100%;height:56px;overflow-x:auto;scrollbar-width:none;padding:0 20px;}
+#site-header nav::-webkit-scrollbar{display:none;}
+#site-header nav a{color:#ccc;text-decoration:none;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:6px 14px;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:color .2s,background .2s;}
+#site-header nav a:hover{color:#d4af37;background:rgba(212,175,55,0.08);}
+#site-header nav a.active{color:#d4af37;border-bottom:2px solid #d4af37;border-radius:0;}
+#nav-burger{display:none;position:absolute;right:18px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:6px;flex-direction:column;align-items:center;gap:5px;}
+#nav-burger span{display:block;width:24px;height:2px;background:#d4af37;border-radius:2px;transition:transform .3s,opacity .3s;}
+#site-header.menu-open #nav-burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+#site-header.menu-open #nav-burger span:nth-child(2){opacity:0;}
+#site-header.menu-open #nav-burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#nav-drawer{display:none;flex-direction:column;background:rgba(0,0,0,0.97);border-top:1px solid rgba(212,175,55,0.2);overflow:hidden;max-height:0;transition:max-height .35s ease;}
+#site-header.menu-open #nav-drawer{max-height:600px;}
+#nav-drawer a{color:#ccc;text-decoration:none;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:13px 28px;border-left:3px solid transparent;transition:color .2s,border-color .2s,background .2s;}
+#nav-drawer a:hover{color:#d4af37;background:rgba(212,175,55,0.06);border-left-color:rgba(212,175,55,0.4);}
+#nav-drawer a.active{color:#d4af37;border-left-color:#d4af37;background:rgba(212,175,55,0.08);}
+@media(max-width:768px){#site-header nav{display:none;}#nav-burger{display:flex;}#nav-drawer{display:flex;}}
+body{padding-top:56px;}
+</style>
+<header id="site-header">
+  <div class="nav-inner">
+    <nav>
+      <a href="index.html">Нүүр хуудас</a>
+      <a href="about.html">Тухай</a>
+      <a href="portfolio.html">Бүтээлүүд</a>
+      <a href="custom.html">Захиалгат</a>
+      <a href="courses.html">Хичээлүүд</a>
+      <a href="services.html">Үйлчилгээ</a>
+      <a href="blog.html">Блог</a>
+      <a href="events.html" class="active">Үйл ажиллагаа</a>
+      <a href="testimonials.html">Сэтгэгдэл</a>
+      <a href="contact.html">Холбоо барих</a>
+    </nav>
+    <button id="nav-burger" aria-label="Цэс нээх" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div id="nav-drawer">
+    <a href="index.html">Нүүр хуудас</a>
+    <a href="about.html">Тухай</a>
+    <a href="portfolio.html">Бүтээлүүд</a>
+    <a href="custom.html">Захиалгат</a>
+    <a href="courses.html">Хичээлүүд</a>
+    <a href="services.html">Үйлчилгээ</a>
+    <a href="blog.html">Блог</a>
+    <a href="events.html" class="active">Үйл ажиллагаа</a>
+    <a href="testimonials.html">Сэтгэгдэл</a>
+    <a href="contact.html">Холбоо барих</a>
+  </div>
+</header>
+<script>
+(function(){
+  var h=document.getElementById("site-header");
+  var b=document.getElementById("nav-burger");
+  var d=document.getElementById("nav-drawer");
+  b.addEventListener("click",function(e){e.stopPropagation();h.classList.toggle("menu-open");b.setAttribute("aria-expanded",h.classList.contains("menu-open"));});
+  d.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){h.classList.remove("menu-open");});});
+  document.addEventListener("click",function(e){if(!h.contains(e.target))h.classList.remove("menu-open");});
+  window.addEventListener("beforeunload",function(){document.body.style.overflow="auto";});
+})();
+</script>
+
+<main>
+<h1>Арга хэмжээ</h1>
+<p class="subtitle">Workshop / Сургалт</p>
+<div class="event" onclick="openWorkshop()">
+  <img src="img/surgalt4.jpg" alt="Монгол бичгийн уран бичлэгийн сургалт">
+  <div class="event-body">
+    <span class="badge">Workshop</span>
+    <h3>Монгол бичгийн уран бичлэгийн сургалт</h3>
+    <div class="date">📅 2026.02.10</div>
+    <p class="desc">Анхан → Ахисан түвшин</p>
+  </div>
+</div>
+</main>
+
+<div class="modal" id="workshopModal">
+  <div class="modal-box">
+    <span class="close" onclick="closeWorkshop()">✕</span>
+    <h2>Монгол бичгийн уран бичлэгийн сургалт</h2>
+    <p>Энэхүү сургалт нь монгол бичгийн суурь, гарын хөдөлгөөн, уран бичлэгийн хэв маягийг практик аргаар заана.</p>
+    <h3 style="color:#d4af37;margin-top:20px">📌 Хөтөлбөр</h3>
+    <ul>
+      <li>Монгол бичгийн үндэс</li>
+      <li>Гарын зөв хөдөлгөөн</li>
+      <li>Уран бичлэгийн хэв</li>
+      <li>Бие даалт, шүүлт</li>
+    </ul>
+    <h3 style="color:#d4af37">📝 Сургалтад бүртгүүлэх</h3>
+    <form onsubmit="handleSubmit(event)">
+      <label>Нэр</label><input type="text" required>
+      <label>Утас</label><input type="text" required>
+      <label>Email</label><input type="email">
+      <label>Нэмэлт мэдээлэл</label><textarea></textarea>
+      <button type="submit">Бүртгүүлэх</button>
+    </form>
+    <div class="contact">
+      <h3 style="color:#d4af37">☎️ Холбоо барих</h3>
+      <p>📞 Утас: +976 85208164</p>
+      <p>📘 Facebook: Т.Эрдэнэсувд</p>
+      <p>✉️ Email: erdenesuvdtaivanbaatar@gmail.com</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const modal=document.getElementById("workshopModal");
+function openWorkshop(){modal.classList.add("active");document.body.style.overflow="hidden";}
+function closeWorkshop(){modal.classList.remove("active");document.body.style.overflow="auto";}
+function handleSubmit(e){e.preventDefault();alert("Амжилттай бүртгүүллээ!");closeWorkshop();}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeWorkshop();});
+modal.addEventListener("click",e=>{if(e.target===modal)closeWorkshop();});
+</script>
+</body>
+</html>

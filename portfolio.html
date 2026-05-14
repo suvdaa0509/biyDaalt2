@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio — Монгол бичиг</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            scroll-behavior: smooth;
+            padding-top: 56px;
+        }
+        #site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #d4af37;
+            z-index: 9999;
+        }
+        #site-header .nav-inner {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 56px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        #site-header nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 56px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 0 20px;
+        }
+        #site-header nav::-webkit-scrollbar { display: none; }
+        #site-header nav a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: 0.2s;
+        }
+        #site-header nav a:hover { color: #d4af37; background: rgba(212,175,55,0.08); }
+        #site-header nav a.active { color: #d4af37; border-bottom: 2px solid #d4af37; border-radius: 0; }
+
+        #nav-burger {
+            display: none;
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            flex-direction: column;
+            gap: 5px;
+        }
+        #nav-burger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #d4af37;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+        #site-header.menu-open #nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        #site-header.menu-open #nav-burger span:nth-child(2) { opacity: 0; }
+        #site-header.menu-open #nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        #nav-drawer {
+            display: none;
+            flex-direction: column;
+            background: rgba(0,0,0,0.97);
+            border-top: 1px solid rgba(212,175,55,0.2);
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.35s ease;
+        }
+        #site-header.menu-open #nav-drawer { max-height: 600px; }
+        #nav-drawer a {
+            color: #ccc;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 15px 28px;
+            border-left: 3px solid transparent;
+            transition: 0.2s;
+        }
+        #nav-drawer a.active { color: #d4af37; border-left-color: #d4af37; background: rgba(212,175,55,0.08); }
+
+        @media(max-width:768px) {
+            #site-header nav { display: none; }
+            #nav-burger { display: flex; }
+            #nav-drawer { display: flex; }
+        }
+        .reveal-section {
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 50px 20px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: 1s ease;
+        }
+        .reveal-section.active { opacity: 1; transform: translateY(0); }
+        h2 { color: #d4af37; font-size: 38px; margin-bottom: 15px; text-align: center; }
+        .sub-text { text-align: center; opacity: 0.7; margin-bottom: 40px; }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .portfolio-item {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 15px;
+            background: #111;
+        }
+        .portfolio-item img { width: 100%; height: 350px; object-fit: cover; transition: 0.5s; }
+        .portfolio-item:hover img { transform: scale(1.05); filter: brightness(0.7); }
+
+        .portfolio-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+        .portfolio-overlay h3 { color: #d4af37; font-size: 20px; }
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 40px;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            width: 100%;
+            max-width: 1200px;
+            max-height: 85vh;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .modal-content img { width: 100%; height: 250px; object-fit: cover; border-radius: 10px; }
+        .close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: #d4af37; cursor: pointer; z-index: 10001; }
+
+        /* ===== CURSOR ===== */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            transition: transform 0.1s ease;
+        }
+        @media(max-width: 768px) { .cursor { display: none; } }
+    </style>
+</head>
+<body>
+
+<header id="site-header">
+    <div class="nav-inner">
+        <nav>
+            <a href="index.html">Нүүр хуудас</a>
+            <a href="about.html">Тухай</a>
+            <a href="portfolio.html" class="active">Бүтээлүүд</a>
+            <a href="custom.html">Захиалгат</a>
+            <a href="courses.html">Хичээлүүд</a>
+            <a href="services.html">Үйлчилгээ</a>
+            <a href="blog.html">Блог</a>
+            <a href="events.html">Үйл ажиллагаа</a>
+            <a href="testimonials.html">Сэтгэгдэл</a>
+            <a href="contact.html">Холбоо барих</a>
+        </nav>
+        <button id="nav-burger" aria-label="Цэс">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+    <div id="nav-drawer">
+        <a href="index.html">Нүүр хуудас</a>
+        <a href="about.html">Тухай</a>
+        <a href="portfolio.html" class="active">Бүтээлүүд</a>
+        <a href="custom.html">Захиалгат</a>
+        <a href="courses.html">Хичээлүүд</a>
+        <a href="services.html">Үйлчилгээ</a>
+        <a href="blog.html">Блог</a>
+        <a href="events.html">Үйл ажиллагаа</a>
+        <a href="testimonials.html">Сэтгэгдэл</a>
+        <a href="contact.html">Холбоо барих</a>
+    </div>
+</header>
+
+<section class="reveal-section" id="portfolio">
+    <h2>Бүтээлүүд · Portfolio</h2>
+    <p class="sub-text">Монгол бичигт суурилсан уран бичлэг, график дизайн, дижитал бүтээлүүд.</p>
+
+    <div class="portfolio-grid">
+        <div class="portfolio-item" data-images="img/img11.jpg, img/img1.jpg, img/img2.jpg, img/img3.jpg">
+            <img src="img/img11.jpg" alt="Уран бичлэг">
+            <div class="portfolio-overlay">
+                <h3>Уран бичлэг</h3>
+                <p>Уламжлалт гар бичмэл</p>
+            </div>
+        </div>
+
+        <div class="portfolio-item" data-images="img/img14.jpg, img/img20.jpg">
+            <img src="img/img14.jpg" alt="Лого дизайн">
+            <div class="portfolio-overlay">
+                <h3>Лого дизайн</h3>
+                <p>Монгол бичиг + Орчин үе</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal" id="portfolioModal">
+    <span class="close">&times;</span>
+    <div class="modal-content"></div>
+</div>
+
+<div class="cursor"></div>
+
+<script>
+    const navBurger = document.getElementById("nav-burger");
+    const siteHeader = document.getElementById("site-header");
+
+    navBurger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        siteHeader.classList.toggle("menu-open");
+    });
+    document.addEventListener("click", (e) => {
+        if (!siteHeader.contains(e.target)) {
+            siteHeader.classList.remove("menu-open");
+        }
+    });
+
+    const cursor = document.querySelector(".cursor");
+    document.addEventListener("mousemove", (e) => {
+        cursor.style.left = e.clientX + "px";
+        cursor.style.top = e.clientY + "px";
+    });
+    const reveal = () => {
+        document.querySelectorAll(".reveal-section").forEach(sec => {
+            const top = sec.getBoundingClientRect().top;
+            if (top < window.innerHeight - 100) {
+                sec.classList.add("active");
+            }
+        });
+    }
+    window.addEventListener("scroll", reveal);
+    reveal();
+
+  
+    const modal = document.getElementById("portfolioModal");
+    const modalContent = document.querySelector(".modal-content");
+    const closeBtn = document.querySelector(".close");
+
+    document.querySelectorAll(".portfolio-item").forEach(item => {
+        item.addEventListener("click", () => {
+            modalContent.innerHTML = "";
+            const images = item.getAttribute("data-images").split(",");
+            images.forEach(src => {
+                const img = document.createElement("img");
+                img.src = src.trim();
+                modalContent.appendChild(img);
+            });
+            modal.classList.add("active");
+            document.body.style.overflow = "hidden"; 
+        });
+    });
+
+    closeBtn.onclick = () => {
+        modal.classList.remove("active");
+        document.body.style.overflow = "auto";
+    };
+
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.classList.remove("active");
+            document.body.style.overflow = "auto";
+        }
+    };
+</script>
+
+</body>
+</html>
