@@ -19,98 +19,88 @@
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background: var(--bg); color: var(--text);
-            padding-top: 130px; /* Header + Scoreboard зай */
+            padding-top: 120px; /* Шинэ Header (56px) + Scoreboard зай */
             overflow-x: hidden;
         }
 
-        /* --- HEADER & NAVIGATION --- */
+        /* --- ШИНЭЧЛЭГДСЭН HEADER --- */
         #site-header {
-            position: fixed; top: 0; left: 0; width: 100%; height: 65px;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3); z-index: 10000;
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--primary); z-index: 9999;
         }
-        .nav-inner {
-            display: flex; align-items: center; justify-content: space-between;
-            max-width: 1300px; margin: 0 auto; padding: 0 20px; height: 100%;
+        #site-header .nav-inner {
+            position: relative; display: flex; align-items: center; height: 56px; max-width: 1200px; margin: 0 auto;
         }
-        .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 1.3rem; }
-        
-        nav { display: flex; gap: 2px; }
-        nav a {
-            color: #bbb; text-decoration: none; font-size: 11px; font-weight: 600;
-            text-transform: uppercase; padding: 10px 12px; border-radius: 6px; transition: var(--transition);
+        #site-header nav {
+            display: flex; justify-content: center; align-items: center; width: 100%; height: 56px;
+            overflow-x: auto; scrollbar-width: none; padding: 0 20px;
         }
-        nav a:hover, nav a.active { color: var(--primary); background: var(--glass); }
+        #site-header nav::-webkit-scrollbar { display: none; }
+        #site-header nav a {
+            color: #ccc; text-decoration: none; font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.8px; padding: 6px 14px;
+            border-radius: 6px; white-space: nowrap; flex-shrink: 0; transition: 0.2s;
+        }
+        #site-header nav a:hover { color: var(--primary); background: rgba(212,175,55,0.08); }
+        #site-header nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); border-radius: 0; }
 
         /* Burger Menu */
         #nav-burger {
-            display: none; background: none; border: none; cursor: pointer; padding: 10px;
-            flex-direction: column; gap: 5px;
+            display: none; position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; padding: 6px; flex-direction: column; gap: 5px;
         }
-        #nav-burger span { display: block; width: 25px; height: 2px; background: var(--primary); transition: 0.3s; }
+        #nav-burger span { display: block; width: 24px; height: 2px; background: var(--primary); border-radius: 2px; transition: 0.3s; }
         
+        #site-header.menu-open #nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        #site-header.menu-open #nav-burger span:nth-child(2) { opacity: 0; }
+        #site-header.menu-open #nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
         /* Mobile Drawer */
         #nav-drawer {
-            position: fixed; top: 65px; left: 0; width: 100%; background: #000;
-            display: flex; flex-direction: column; max-height: 0; overflow: hidden;
-            transition: max-height 0.4s ease; border-bottom: 0 solid var(--primary);
+            display: none; flex-direction: column; background: rgba(0,0,0,0.97);
+            border-top: 1px solid rgba(212,175,55,0.2); overflow: hidden; max-height: 0; transition: max-height 0.35s ease;
         }
-        .menu-open #nav-drawer { max-height: 100vh; border-bottom-width: 1px; }
-        #nav-drawer a { color: #fff; text-decoration: none; padding: 15px 25px; border-bottom: 1px solid #111; font-size: 14px; }
+        #site-header.menu-open #nav-drawer { max-height: 600px; }
+        #nav-drawer a {
+            color: #ccc; text-decoration: none; font-size: 13px; font-weight: 600;
+            text-transform: uppercase; padding: 15px 28px; border-left: 3px solid transparent; transition: 0.2s;
+        }
+        #nav-drawer a.active { color: var(--primary); border-left-color: var(--primary); background: rgba(212,175,55,0.08); }
 
-        @media (max-width: 1100px) { nav { display: none; } #nav-burger { display: flex; } }
+        @media(max-width:992px) {
+            #site-header nav { display: none; }
+            #nav-burger { display: flex; }
+            #nav-drawer { display: flex; }
+        }
 
-        /* --- SCOREBOARD (Modern & Clean) --- */
+        /* --- SCOREBOARD --- */
         .scoreboard-container {
-            position: fixed; top: 65px; left: 0; width: 100%; z-index: 999;
+            position: fixed; top: 56px; left: 0; width: 100%; z-index: 999;
             background: linear-gradient(180deg, #000 0%, transparent 100%); padding: 10px 0;
         }
         .scoreboard {
-            max-width: 600px; margin: 0 auto; background: rgba(20, 20, 20, 0.8);
+            max-width: 500px; margin: 0 auto; background: rgba(20, 20, 20, 0.8);
             backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 50px; padding: 8px 25px; display: flex; justify-content: space-between; align-items: center;
         }
         .stat { display: flex; align-items: center; gap: 8px; }
         .stat-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
         .stat-value { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-
-        /* --- GAME CONTENT --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; text-align: center; }
         .main-title { font-size: 1.8rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 3px; }
-
-        .levels-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
-        }
-        .card {
-            background: var(--card-bg); padding: 40px; border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.05); transition: var(--transition);
-        }
+        .levels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); padding: 40px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.05); transition: var(--transition); }
         .card.unlocked:hover { transform: translateY(-10px); border-color: var(--primary); cursor: pointer; }
         .card.locked { opacity: 0.3; filter: grayscale(1); }
         .level-icon { font-size: 3rem; color: var(--primary); margin-bottom: 15px; display: block; }
-
-        /* --- MODAL & GAMEPLAY --- */
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.97);
-            display: none; justify-content: center; align-items: center; z-index: 11000;
-        }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.97); display: none; justify-content: center; align-items: center; z-index: 11000; }
         .modal.active { display: flex; }
-        .modal-content {
-            background: #111; border: 1px solid var(--primary); padding: 40px;
-            border-radius: 30px; width: 90%; max-width: 400px; position: relative; text-align: center;
-        }
-        .card-timer {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            background: var(--primary); color: #000; padding: 5px 25px; border-radius: 20px;
-            font-weight: 900; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(212,175,55,0.4);
-        }
+        .modal-content { background: #111; border: 1px solid var(--primary); padding: 40px; border-radius: 30px; width: 90%; max-width: 400px; position: relative; text-align: center; }
+        .card-timer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 5px 25px; border-radius: 20px; font-weight: 900; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(212,175,55,0.4); }
         .mongol-text { font-size: 5rem; writing-mode: vertical-lr; height: 180px; margin: 20px auto; color: var(--primary); }
-        .game-btn {
-            background: #222; color: #fff; padding: 15px; border: 1px solid rgba(212,175,55,0.2);
-            border-radius: 12px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; transition: 0.2s;
-        }
+        .game-btn { background: #222; color: #fff; padding: 15px; border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; transition: 0.2s; }
         .game-btn:hover { background: var(--primary); color: #000; }
-
         @keyframes urgentPulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.1); background: #ff4d4d; } }
         .urgent { animation: urgentPulse 0.5s infinite; }
     </style>
@@ -119,7 +109,6 @@
 
 <header id="site-header">
     <div class="nav-inner">
-        <a href="index.html" class="logo">ᠮᠣᠩᠭᠣᠯ</a>
         <nav>
             <a href="index.html">Нүүр хуудас</a>
             <a href="about.html">Тухай</a>
@@ -132,13 +121,14 @@
             <a href="testimonials.html">Сэтгэгдэл</a>
             <a href="contact.html">Холбоо барих</a>
         </nav>
-        <button id="nav-burger" onclick="toggleMenu()">
+        <button id="nav-burger" aria-label="Цэс нээх">
             <span></span><span></span><span></span>
         </button>
     </div>
     <div id="nav-drawer">
         <a href="index.html">Нүүр хуудас</a>
         <a href="about.html">Тухай</a>
+        <a href="portfolio.html">Бүтээлүүд</a>
         <a href="courses.html">Хичээлүүд</a>
         <a href="events.html" class="active">Үйл ажиллагаа</a>
         <a href="contact.html">Холбоо барих</a>
@@ -174,6 +164,8 @@
     </div>
 </div>
 
+<!-- Modal, Game Logic, Scripts хэсэг хэвээрээ үлдэнэ -->
+
 <div class="modal" id="gameModal">
     <div class="modal-content">
         <div id="card-timer" class="card-timer">30s</div>
@@ -186,11 +178,19 @@
 
 <script>
     // NAVIGATION LOGIC
-    function toggleMenu() {
-        document.getElementById('site-header').classList.toggle('menu-open');
-    }
+    const navBurger = document.getElementById("nav-burger");
+    const siteHeader = document.getElementById("site-header");
 
-    // GAME LOGIC
+    navBurger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        siteHeader.classList.toggle("menu-open");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!siteHeader.contains(e.target)) {
+            siteHeader.classList.remove("menu-open");
+        }
+    });
     let score = 0, lives = 3, timeLeft = 30, timer, currentQ = 0, currentLvl = 1, unlockedLvl = 1;
 
     const questions = {
