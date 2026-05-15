@@ -3,101 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Монгол Бичиг — Тоглоом</title>
+    <title>Монгол Бичиг</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #d4af37;
+            --bg: #0a0a0a;
+            --card-bg: #151515;
+            --text: #ffffff;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
             width: 100%; height: 100%;
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #0a0a0a; color: #fff;
-            overflow-x: hidden; padding-top: 56px;
-        }
-
+            background: var(--bg); color: var(--text);
+            overflow-x: hidden; padding-top: 60px;
         #site-header {
             position: fixed; top: 0; left: 0; width: 100%;
             background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
-            border-bottom: 1px solid #d4af37; z-index: 9999;
+            border-bottom: 1px solid var(--primary); z-index: 9999;
         }
-        #site-header .nav-inner {
-            position: relative; display: flex; align-items: center; height: 56px; max-width: 1200px; margin: 0 auto;
+        .nav-inner {
+            display: flex; align-items: center; height: 60px; max-width: 1200px; margin: 0 auto; padding: 0 20px;
         }
-        #site-header nav {
-            display: flex; justify-content: center; align-items: center; width: 100%; height: 56px;
-            overflow-x: auto; scrollbar-width: none; padding: 0 20px;
+        nav {
+            display: flex; justify-content: center; align-items: center; width: 100%; height: 60px;
+            overflow-x: auto; scrollbar-width: none; gap: 5px;
         }
-        #site-header nav::-webkit-scrollbar { display: none; }
-        #site-header nav a {
-            color: #ccc; text-decoration: none; font-size: 12px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.8px; padding: 6px 14px;
-            border-radius: 6px; white-space: nowrap; flex-shrink: 0; transition: 0.2s;
+        nav::-webkit-scrollbar { display: none; }
+        nav a {
+            color: #ccc; text-decoration: none; font-size: 11px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 12px;
+            border-radius: 6px; white-space: nowrap; transition: var(--transition);
         }
-        #site-header nav a:hover { color: #d4af37; background: rgba(212,175,55,0.08); }
-        #site-header nav a.active { color: #d4af37; border-bottom: 2px solid #d4af37; border-radius: 0; }
+        nav a:hover { color: var(--primary); background: rgba(212,175,55,0.08); }
+        nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); border-radius: 0; }
 
         #nav-burger {
-            display: none; position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; cursor: pointer; padding: 6px; flex-direction: column; gap: 5px;
+            display: none; background: none; border: none; cursor: pointer; padding: 6px; flex-direction: column; gap: 5px;
         }
-        #nav-burger span { display: block; width: 24px; height: 2px; background: #d4af37; border-radius: 2px; transition: 0.3s; }
-        #site-header.menu-open #nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-        #site-header.menu-open #nav-burger span:nth-child(2) { opacity: 0; }
-        #site-header.menu-open #nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
+        #nav-burger span { display: block; width: 24px; height: 2px; background: var(--primary); border-radius: 2px; transition: 0.3s; }
+        
         #nav-drawer {
             display: none; flex-direction: column; background: rgba(0,0,0,0.97);
-            border-top: 1px solid rgba(212,175,55,0.2); overflow: hidden; max-height: 0; transition: max-height 0.35s ease;
+            border-top: 1px solid rgba(212,175,55,0.2); overflow: hidden; max-height: 0; transition: max-height 0.4s ease;
         }
-        #site-header.menu-open #nav-drawer { max-height: 600px; }
-        #nav-drawer a { color: #ccc; text-decoration: none; font-size: 13px; font-weight: 600; text-transform: uppercase; padding: 15px 28px; border-left: 3px solid transparent; transition: 0.2s; }
-        #nav-drawer a.active { color: #d4af37; border-left-color: #d4af37; background: rgba(212,175,55,0.08); }
+        #site-header.menu-open #nav-drawer { max-height: 100vh; display: flex; }
+        #nav-drawer a { color: #ccc; text-decoration: none; font-size: 13px; font-weight: 600; text-transform: uppercase; padding: 15px 25px; border-left: 3px solid transparent; }
+        #nav-drawer a.active { color: var(--primary); border-left-color: var(--primary); background: rgba(212,175,55,0.05); }
 
-        @media(max-width:768px) { #site-header nav { display: none; } #nav-burger { display: flex; } #nav-drawer { display: flex; } }
-
+        @media(max-width: 1024px) { nav { display: none; } #nav-burger { display: flex; } }
         .scoreboard {
-            text-align: center; font-size: 1.1rem; font-weight: bold; color: #d4af37;
-            background: #111; padding: 15px; border-bottom: 1px solid #222;
+            display: flex; justify-content: space-around; align-items: center;
+            background: #111; padding: 10px; border-bottom: 1px solid #222;
+            position: sticky; top: 50px; z-index: 900; font-weight: bold;
+        }
+        #timer-display { color: #ff4d4d; }
+        .main-title { text-align: center; margin: 40px 0 20px; font-size: 2.5rem; color: var(--primary); letter-spacing: 3px; animation: fadeInDown 0.8s ease; }
+
+        .container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; padding: 20px; max-width: 1200px; margin: 0 auto;
         }
 
-        .main-title {
-            text-align: center; margin: 40px 0; font-size: 2.5rem; color: #d4af37;
-            text-transform: uppercase; letter-spacing: 3px;
-        }
-
-        .container { display: flex; justify-content: center; flex-wrap: wrap; gap: 25px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-        
         .card {
-            background: #151515; border: 1px solid #222; border-radius: 20px;
-            padding: 30px; width: 300px; text-align: center; transition: 0.4s;
-            filter: grayscale(100%); opacity: 0.4; cursor: not-allowed;
+            background: var(--card-bg); border: 1px solid #222; border-radius: 20px;
+            padding: 40px 20px; text-align: center; transition: var(--transition);
+            opacity: 0; transform: translateY(30px); animation: fadeInUp 0.6s forwards;
         }
-        .card.unlocked { filter: grayscale(0%); opacity: 1; cursor: pointer; border-color: #d4af37; }
-        .card.unlocked:hover { transform: translateY(-10px); border-color: #d4af37; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15); }
-        
-        .level-icon { font-size: 3rem; margin-bottom: 15px; color: #d4af37; display: block; }
-        .card h3 { margin-bottom: 10px; color: #fff; }
-        .card p { color: #888; font-size: 0.9rem; }
-        .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(10px); }
-        .modal.active { display: flex; }
-        .modal-content { background: #111; border: 1px solid #d4af37; padding: 40px; border-radius: 25px; width: 90%; max-width: 500px; text-align: center; }
-        
-        .question-box { margin-bottom: 25px; padding: 20px; background: rgba(212, 175, 55, 0.05); border-radius: 15px; border: 1px solid #333; }
-        input[type="text"] { 
-            width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; 
-            border: 1px solid #333; background: #0a0a0a; color: white; text-align: center; font-size: 1.1rem; outline: none;
-        }
-        input:focus { border-color: #d4af37; }
-        
-        .btn-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        button.game-btn { padding: 14px; border: none; border-radius: 12px; background: #d4af37; color: #000; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; }
-        button.game-btn:hover { background: #fff; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
-        .close-btn { background: #333 !important; color: #fff !important; margin-top: 20px; width: 100%; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes popUp {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            50% { transform: translate(-50%, -60%) scale(1.1); opacity: 1; }
-            100% { transform: translate(-50%, -70%) scale(1); opacity: 0; }
+        .card.unlocked { cursor: pointer; }
+        .card.unlocked:hover { 
+            transform: translateY(-10px) scale(1.02); 
+            border-color: var(--primary); 
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.1); 
         }
+        .card.locked { opacity: 0.4; filter: grayscale(1); cursor: not-allowed; }
+
+        .level-icon { font-size: 4rem; color: var(--primary); display: block; margin-bottom: 15px; transition: transform 0.6s; }
+        .card:hover .level-icon { transform: rotateY(360deg); }
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(8px);
+        }
+        .modal.active { display: flex; animation: zoomIn 0.3s ease; }
+        .modal-content {
+            background: #111; border: 1px solid var(--primary); padding: 30px;
+            border-radius: 25px; width: 90%; max-width: 450px; text-align: center;
+        }
+
+        .mongol-text { font-size: 4.5rem; writing-mode: vertical-lr; height: 180px; margin: 20px auto; color: var(--primary); }
+
+        input[type="text"] {
+            width: 100%; padding: 15px; background: #000; border: 1px solid #333;
+            border-radius: 12px; color: #fff; text-align: center; font-size: 1.2rem; margin-bottom: 15px; outline: none;
+        }
+        .game-btn {
+            background: var(--primary); color: #000; padding: 14px; border: none;
+            border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%;
+            text-transform: uppercase; transition: var(--transition);
+        }
+        .game-btn:hover { background: #fff; transform: scale(1.03); }
+
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .shake { animation: shake 0.3s ease; }}
     </style>
 </head>
 <body>
@@ -112,13 +128,11 @@
             <a href="courses.html">Хичээлүүд</a>
             <a href="services.html">Үйлчилгээ</a>
             <a href="blog.html">Блог</a>
-            <a href="events.html">Үйл ажиллагаа</a>
+            <a href="events.html" class="active">Үйл ажиллагаа</a>
             <a href="testimonials.html">Сэтгэгдэл</a>
             <a href="contact.html">Холбоо барих</a>
         </nav>
-        <button id="nav-burger" aria-label="Цэс нээх">
-            <span></span><span></span><span></span>
-        </button>
+        <button id="nav-burger"><span></span><span></span><span></span></button>
     </div>
     <div id="nav-drawer">
         <a href="index.html">Нүүр хуудас</a>
@@ -128,163 +142,132 @@
         <a href="courses.html">Хичээлүүд</a>
         <a href="services.html">Үйлчилгээ</a>
         <a href="blog.html">Блог</a>
-        <a href="events.html">Үйл ажиллагаа</a>
+        <a href="events.html" class="active">Үйл ажиллагаа</a>
         <a href="testimonials.html">Сэтгэгдэл</a>
         <a href="contact.html">Холбоо барих</a>
     </div>
 </header>
 
-<div class="scoreboard">Оноо: <span id="score">0</span> | Нээгдсэн шат: <span id="user-lvl">1</span></div>
+<div class="scoreboard">
+    <div id="lives-display">❤️❤️❤️</div>
+    <div id="timer-display">⏱ 30s</div>
+    <div>Оноо: <span id="score" style="color:var(--primary)">0</span></div>
+</div>
 
 <h1 class="main-title">Монгол Бичиг</h1>
 
 <div class="container">
-    <div class="card unlocked" id="card-1" onclick="openLevel(1)">
+    <div class="card unlocked" id="lvl-1" onclick="openLevel(1)">
         <span class="level-icon">ᠠ</span>
         <h3>Анхан шат</h3>
-        <p>Зурлага болон үндсэн үсэг</p>
+        <p style="color:#777; margin-top:10px;">Үндсэн эгшиг ба зурлага</p>
     </div>
-    <div class="card" id="card-2" onclick="openLevel(2)">
+    <div class="card locked" id="lvl-2" onclick="openLevel(2)">
         <span class="level-icon">ᠪ</span>
         <h3>Дунд шат</h3>
-        <p>Үг бүтээх ба унших</p>
+        <p style="color:#777; margin-top:10px;">Гийгүүлэгч холболтууд</p>
     </div>
-    <div class="card" id="card-3" onclick="openLevel(3)">
-        <span class="level-icon">ᠴ</span>
+    <div class="card locked" id="lvl-3" onclick="openLevel(3)">
+        <span class="level-icon">ᠮᠣ</span>
         <h3>Ахлах шат</h3>
-        <p>Өгүүлбэр ба дүрэм</p>
+        <p style="color:#777; margin-top:10px;">Унших ба галиглах</p>
     </div>
 </div>
 
 <div class="modal" id="gameModal">
-    <div class="modal-content">
-        <h2 id="qTitle" style="color:#d4af37; margin-bottom:15px; font-size: 1.2rem;">Даалгавар</h2>
+    <div class="modal-content" id="modalBox">
         <div id="gameArea"></div>
-        <button class="game-btn close-btn" onclick="closeModal()">Тоглоомыг зогсоох</button>
+        <button onclick="closeModal()" style="margin-top:20px; background:none; border:none; color:#555; cursor:pointer; text-decoration:underline;">Хаах</button>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
-   
-    const navBurger = document.getElementById("nav-burger");
-    const siteHeader = document.getElementById("site-header");
 
-    navBurger.onclick = (e) => {
-        e.stopPropagation();
-        siteHeader.classList.toggle("menu-open");
-    };
-    document.addEventListener("click", (e) => {
-        if (!siteHeader.contains(e.target)) siteHeader.classList.remove("menu-open");
-    });
+    const burger = document.getElementById('nav-burger');
+    const header = document.getElementById('site-header');
+    burger.onclick = () => header.classList.toggle('menu-open');
+    let score = 0, lives = 3, timeLeft = 30, timer, currentQ = 0, currentLvl = 1, unlockedLvl = 1;
 
-    let score = 0;
-    let unlockedLevel = 1;
-    let currentQIndex = 0;
-    let currentLvl = 1;
-    let currentTasks = [];
-
-    const encouragements = ["Маш сайн байна! 🎉", "Гайхалтай! ✨", "Зөв хариуллаа! 💪", "Монгол бичгийн мастер! 🏹", "Яг зөв! 🔥"];
-
-    const tasksData = {
+    const questions = {
         1: [
-            { type: "choice", q: "Монгол бичгийн үгийн эхэнд ордог зурлагыг юу гэдэг вэ?", a: ["Титэм", "Шүд", "Гэдэс"], c: "Титэм" },
-            { type: "choice", q: "Монгол бичгийн гол шугамыг юу гэж нэрлэдэг вэ?", a: ["Нуруу", "Шилбэ", "Гэдэс"], c: "Нуруу" },
-            { type: "input", q: "Үг дунд ордог богино зурлагыг юу гэдэг вэ? (Ш...)", c: "шүд" }
+            { type: "choice", q: "Энэ ямар үсэг вэ?", visual: "ᠠ", opts: ["А", "Э", "И"], ans: "А" },
+            { type: "input", q: "Монгол бичгийн гол шугамыг юу гэдэг вэ?", ans: "нуруу" }
         ],
         2: [
-            { type: "choice", q: "'ᠳᠤᠨᠳᠤ' гэдэг үгийг кириллээр юу гэх вэ?", a: ["Дунд", "Дор", "Дандаа"], c: "Дунд" },
-            { type: "input", q: "'Сайн' гэдгийг галиглаж бичнэ үү (С...)", c: "сайин" }
-        ],
-        3: [
-            { type: "choice", q: "Чингисийн чулууны бичиг хэдэн онд бичигдсэн бэ?", a: ["1224", "1206", "1300"], c: "1224" },
-            { type: "input", q: "Монгол бичгийг дээрээс доош, зүүнээс _____ тийш бичдэг.", c: "баруун" }
+            { type: "choice", q: "'Б' үсгийг ол", visual: "ᠪ", opts: ["ᠪ", "ᠮ", "ᠯ"], ans: "ᠪ" }
         ]
     };
 
     function openLevel(lvl) {
-        if (lvl > unlockedLevel) { alert("Энэ шат хаалттай байна!"); return; }
-        currentLvl = lvl;
-        currentQIndex = 0;
-        currentTasks = [...tasksData[lvl]].sort(() => Math.random() - 0.5);
+        if (lvl > unlockedLvl) return;
+        currentLvl = lvl; lives = 3; currentQ = 0; score = 0;
         document.getElementById('gameModal').classList.add('active');
+        updateUI();
+        startTimer();
         renderQuestion();
     }
-
     function renderQuestion() {
         const area = document.getElementById('gameArea');
-        const task = currentTasks[currentQIndex];
-        document.getElementById('qTitle').textContent = `Шат ${currentLvl} - Асуулт ${currentQIndex + 1}/${currentTasks.length}`;
-        area.innerHTML = `<div class="question-box"><p>${task.q}</p></div>`;
+        const q = questions[currentLvl][currentQ];
+        let html = `<h2 style="color:var(--primary); margin-bottom:15px;">Асуулт ${currentQ + 1}</h2>`;
+        if (q.visual) html += `<div class="mongol-text">${q.visual}</div>`;
+        html += `<p style="margin-bottom:20px;">${q.q}</p>`;
 
-        if (task.type === "choice") {
-            const grid = document.createElement('div');
-            grid.className = "btn-grid";
-            task.a.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "game-btn";
-                btn.textContent = opt;
-                btn.onclick = () => check(opt, task.c);
-                grid.appendChild(btn);
-            });
-            area.appendChild(grid);
+        if (q.type === "choice") {
+            html += `<div style="display:grid; gap:10px;">`;
+            q.opts.forEach(o => html += `<button class="game-btn" onclick="check('${o}')">${o}</button>`);
+            html += `</div>`;
         } else {
-            area.innerHTML += `
-                <input type="text" id="userInput" placeholder="Хариултаа бичээд шалгах товчийг дар..." autocomplete="off">
-                <button class="game-btn" onclick="handleInput()" style="width:100%">Шалгах</button>
-            `;
-            setTimeout(() => document.getElementById('userInput').focus(), 100);
+            html += `<input type="text" id="userInput" placeholder="Хариултаа бичээд Enter дар...">
+                     <button class="game-btn" onclick="checkInput()">Шалгах</button>`;
         }
+        area.innerHTML = html;
     }
-
-    function handleInput() {
-        const input = document.getElementById('userInput');
-        check(input.value.trim().toLowerCase(), currentTasks[currentQIndex].c.toLowerCase());
-    }
-
-    function check(u, c) {
-        if (u === c) {
-            score += 20;
-            document.getElementById('score').textContent = score;
-            showFeedback(encouragements[Math.floor(Math.random() * encouragements.length)]);
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#d4af37', '#ffffff'] });
-
-            currentQIndex++;
-            if (currentQIndex < currentTasks.length) {
-                setTimeout(renderQuestion, 1200);
-            } else {
-                finish();
-            }
+    function check(val) {
+        if (val.toLowerCase() === questions[currentLvl][currentQ].ans.toLowerCase()) {
+            score += 100;
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            currentQ++;
+            if (currentQ < questions[currentLvl].length) renderQuestion();
+            else finishLevel();
         } else {
-            alert("Буруу байна, дахин оролдоорой! 🤔");
+            lives--;
+            document.getElementById('modalBox').classList.add('shake');
+            setTimeout(() => document.getElementById('modalBox').classList.remove('shake'), 300);
+            if (lives <= 0) { alert("Амь дууслаа!"); closeModal(); }
         }
+        updateUI();
     }
 
-    function showFeedback(msg) {
-        const fb = document.createElement('div');
-        fb.style = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                    background: #d4af37; color: #000; padding: 15px 30px; border-radius: 50px; 
-                    font-weight: bold; font-size: 1.2rem; z-index: 11000; animation: popUp 1.2s forwards; pointer-events: none;`;
-        fb.innerText = msg;
-        document.body.appendChild(fb);
-        setTimeout(() => fb.remove(), 1200);
-    }
+    function checkInput() { check(document.getElementById('userInput').value); }
 
-    function finish() {
-        if (currentLvl === unlockedLevel && unlockedLevel < 3) {
-            unlockedLevel++;
-            document.getElementById(`card-${unlockedLevel}`).classList.add('unlocked');
-            document.getElementById('user-lvl').textContent = unlockedLevel;
+    function finishLevel() {
+        clearInterval(timer);
+        if (currentLvl === unlockedLvl && unlockedLvl < 3) {
+            unlockedLvl++;
+            document.getElementById(`lvl-${unlockedLvl}`).classList.remove('locked');
+            document.getElementById(`lvl-${unlockedLvl}`).classList.add('unlocked');
         }
-        document.getElementById('gameArea').innerHTML = `
-            <h2 style="color:#d4af37; margin-bottom:10px;">Баяр хүргэе! 🎉</h2>
-            <p style="margin-bottom:20px;">Та энэ шатыг амжилттай дуусгалаа.</p>
-            <button class="game-btn" onclick="closeModal()" style="width:100%">Цэс рүү буцах</button>
-        `;
+        document.getElementById('gameArea').innerHTML = `<h2>Амжилттай! 🏆</h2><button class="game-btn" style="margin-top:20px" onclick="closeModal()">Цэс рүү буцах</button>`;
     }
 
-    function closeModal() { document.getElementById('gameModal').classList.remove('active'); }
+    function startTimer() {
+        clearInterval(timer); timeLeft = 30;
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-display').innerText = `⏱ ${timeLeft}s`;
+            if (timeLeft <= 0) { clearInterval(timer); alert("Хугацаа дууслаа!"); closeModal(); }
+        }, 1000);
+    }
+
+    function updateUI() {
+        document.getElementById('score').innerText = score;
+        document.getElementById('lives-display').innerText = "❤️".repeat(lives);
+    }
+
+    function closeModal() { clearInterval(timer); document.getElementById('gameModal').classList.remove('active'); }
 </script>
 
 </body>
